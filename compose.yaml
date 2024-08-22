@@ -1,0 +1,19 @@
+version: "3"
+services:
+  db:
+    image: postgres:15.3-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - TZ=Asia/Tokyo
+      - LANG=ja_JP.utf8
+      # Docker-Composeはデフォルトで.envファイルを読み込む
+      # .envに指定された環境変数のなかでコンテナ内で使用する
+      # 環境変数を指定する
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - db-store:/var/lib/postgresql/data
+volumes:
+  db-store:

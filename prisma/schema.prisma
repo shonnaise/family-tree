@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tree {
+  treeId String @map("tree_id") @db.Uuid @id
+  treeName String @map("tree_name") @db.VarChar(255)
+  mainPersonId String @map("person_id") @db.Uuid @unique
+  @@map("tree")
+}
+
+model Person {
+  personId String @map("person_id") @db.Uuid @id
+  name String @map("name") @db.VarChar(255)
+  gender Gender @map("gender")
+  genderIdentity Gender @map("gender_identity")
+  aliving Boolean @map("aliving")
+  birthDate DateTime? @map("birth_date") @db.Timestamptz(3)
+  deadDate DateTime? @map("dead_date") @db.Timestamptz(3)
+  asChild Marriage @relation("marriage_children", fields: [personId], references: [marriageId])
+  asHusband Marriage[] @relation("marriage_husband")
+  asWife Marriage[] @relation("marriage_wife")
+  @@map("person")
+}
+
+model Marriage {
+  marriageId String @map("marriage_id") @db.Uuid @id
+  husbandId String @map("husband_id") @db.Uuid @unique
+  wifeId String @map("wife_id") @db.Uuid @unique
+  divorced Boolean @map("divorced")
+  marriageDate DateTime? @map("marriage_date") @db.Timestamptz(3)
+  divorceDate DateTime? @map("divorce_date") @db.Timestamptz(3)
+  children Person[] @relation("marriage_children")
+  husband Person @relation("marriage_husband", fields: [husbandId], references: [personId])
+  wife Person @relation("marriage_wife", fields: [wifeId], references: [personId])
+  @@map("marriage")
+}
+
+enum Gender {
+  male
+  female
+}
