@@ -13,10 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  userId String @map("user_id") @db.Uuid @id
+  trees Tree[] @relation("account_trees")
+}
+
 model Tree {
   treeId String @map("tree_id") @db.Uuid @id
   treeName String @map("tree_name") @db.VarChar(255)
   mainPersonId String @map("person_id") @db.Uuid @unique
+  ownder Account @relation("account_trees", fields: [treeId], references: [userId])
   @@map("tree")
 }
 
