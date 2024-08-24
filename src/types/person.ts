@@ -5,6 +5,6 @@ export type Person = {
   name: string;
   gender: Gender;
   aliving: boolean;
-  birthDate?: Date;
-  deadDate?: Date;
+  birthDate: Date;
+  deadDate: Date;
 };
